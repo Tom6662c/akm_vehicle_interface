@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!-- 启动 akm_vehicle_interface 节点 -->
+    <node pkg="akm_vehicle_interface" exec="akm_vehicle_interface" name="akm_vehicle_interface" output="screen">
+        <!-- 如果需要设置参数，可以在这里添加 -->
+        <!-- <param name="wheelbase" value="2.5" /> -->
+        <!-- <param name="control_timeout" value="1.0" /> -->
+    </node>
+</launch>
