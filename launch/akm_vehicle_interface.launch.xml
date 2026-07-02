@@ -2,8 +2,13 @@
 <launch>
     <!-- 启动 akm_vehicle_interface 节点 -->
     <node pkg="akm_vehicle_interface" exec="akm_vehicle_interface" name="akm_vehicle_interface" output="screen">
-        <!-- 如果需要设置参数，可以在这里添加 -->
-        <!-- <param name="wheelbase" value="2.5" /> -->
-        <!-- <param name="control_timeout" value="1.0" /> -->
+        <param name="wheelbase" value="0.32" />
+        <param name="control_timeout_sec" value="1.0" />
+        <param name="max_speed" value="0.5" />
+        <param name="max_steer_angle" value="0.43" />
+        <param name="input_control_cmd_topic" value="/control/command/control_cmd" />
+        <param name="output_cmd_vel_topic" value="/cmd_vel" />
+        <param name="input_odom_topic" value="/odom" />
+        <param name="input_imu_topic" value="/imu/data_raw" />
     </node>
 </launch>

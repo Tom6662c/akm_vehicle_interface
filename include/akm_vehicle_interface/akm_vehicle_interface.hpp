@@ -4,6 +4,7 @@
 #include <chrono>
 #include <memory>
 #include <cmath>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
@@ -29,15 +30,20 @@ public:
 
 private:
   // ---------- 订阅（来自 Autoware） ----------
-  rclcpp::Subscription<autoware_auto_control_msgs::msg::AckermannControlCommand>::SharedPtr control_cmd_sub_;
+  rclcpp::Subscription<autoware_auto_control_msgs::msg::AckermannControlCommand>::SharedPtr
+    control_cmd_sub_;
   rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::GearCommand>::SharedPtr gear_cmd_sub_;
-  rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::TurnIndicatorsCommand>::SharedPtr turn_indicators_cmd_sub_;
-  rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::HazardLightsCommand>::SharedPtr hazard_lights_cmd_sub_;
+  rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::TurnIndicatorsCommand>::SharedPtr
+    turn_indicators_cmd_sub_;
+  rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::HazardLightsCommand>::SharedPtr
+    hazard_lights_cmd_sub_;
 
   // ---------- 发布（到 Autoware） ----------
   rclcpp::Publisher<tier4_vehicle_msgs::msg::BatteryStatus>::SharedPtr battery_pub_;
-  rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::HazardLightsReport>::SharedPtr hazard_lights_pub_;
-  rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::TurnIndicatorsReport>::SharedPtr turn_indicators_pub_;
+  rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::HazardLightsReport>::SharedPtr
+    hazard_lights_pub_;
+  rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::TurnIndicatorsReport>::SharedPtr
+    turn_indicators_pub_;
   rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::VelocityReport>::SharedPtr velocity_status_pub_;
   rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::SteeringReport>::SharedPtr steering_status_pub_;
   rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::ControlModeReport>::SharedPtr control_mode_pub_;
@@ -63,16 +69,29 @@ private:
   rclcpp::TimerBase::SharedPtr timeout_timer_;
 
   // ---------- 车辆参数 ----------
-  double wheelbase_ = 0.32;   // 轴距（米）
+  double wheelbase_ = 0.32;
+  double control_timeout_sec_ = 1.0;
+  double max_speed_ = 0.5;
+  double max_steer_angle_ = 0.43;
+  std::string input_control_cmd_topic_ = "/control/command/control_cmd";
+  std::string output_cmd_vel_topic_ = "/cmd_vel";
+  std::string input_odom_topic_ = "/odom";
+  std::string input_imu_topic_ = "/imu/data_raw";
 
   // ---------- 超时标志 ----------
   bool control_timeout_ = true;
+  rclcpp::Time last_control_cmd_received_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_odom_received_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_imu_received_time_{0, 0, RCL_ROS_TIME};
 
   // ---------- 回调函数 ----------
-  void callback_control_cmd(const autoware_auto_control_msgs::msg::AckermannControlCommand::ConstSharedPtr msg);
+  void callback_control_cmd(
+    const autoware_auto_control_msgs::msg::AckermannControlCommand::ConstSharedPtr msg);
   void callback_gear_cmd(const autoware_auto_vehicle_msgs::msg::GearCommand::ConstSharedPtr msg);
-  void callback_turn_indicators_cmd(const autoware_auto_vehicle_msgs::msg::TurnIndicatorsCommand::ConstSharedPtr msg);
-  void callback_hazard_lights_cmd(const autoware_auto_vehicle_msgs::msg::HazardLightsCommand::ConstSharedPtr msg);
+  void callback_turn_indicators_cmd(
+    const autoware_auto_vehicle_msgs::msg::TurnIndicatorsCommand::ConstSharedPtr msg);
+  void callback_hazard_lights_cmd(
+    const autoware_auto_vehicle_msgs::msg::HazardLightsCommand::ConstSharedPtr msg);
   void callback_odom(const nav_msgs::msg::Odometry::ConstSharedPtr msg);
   void callback_imu(const sensor_msgs::msg::Imu::ConstSharedPtr msg);
 
